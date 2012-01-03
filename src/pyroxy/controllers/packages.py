@@ -23,16 +23,19 @@ def format_file_entry(base_path, filename):
 @app.route("/packages/")
 @app.route("/packages/<relative_path:path>")
 def serve_packages(relative_path=""):
-    # Redirect with a trailing slash
-    if relative_path and not relative_path.endswith('/'):
-        redirect("/" + os.path.join("packages", relative_path) + "/"), 301
-
     root_path = config['pypi_packages_path']
     path = os.path.join(root_path, relative_path)
 
+    # If we have a file, just serve it up immediately.
     if not os.path.isdir(path):
+        # This will also catch non-existent files, which will automatically
+        # return a 404 error.
         return static_file(relative_path, root_path,
                            download=os.path.basename(path))
+    # Redirect with a trailing slash
+    elif relative_path and not relative_path.endswith('/'):
+        moved_location = "/" + os.path.join("packages", relative_path) + "/"
+        redirect(moved_location , 301)
 
     entries = tuple(format_file_entry(path, entry) for entry in os.listdir(path))
     packages_base_path = "/".join(("packages", relative_path)).strip("/")
