@@ -1,2 +1,4 @@
 dist
 src/pyroxy.egg-info/
+nose*.egg
+mock*.egg
