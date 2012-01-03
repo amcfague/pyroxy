@@ -57,6 +57,8 @@ def redirect_simple_list(package_name=None):
         url = "/simple/%s/"
     else:
         url = "/simple/"
+    
+    log.info("Redirecting with trailing slash to %s", url)
     bottle.redirect(url, 301)
 
 
