@@ -17,5 +17,5 @@ views_path = os.path.join(
 bottle.TEMPLATE_PATH = [views_path]
 
 
-import pyroxy.controllers.static
 import pyroxy.controllers.simple
+import pyroxy.controllers.static

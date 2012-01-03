@@ -7,7 +7,7 @@ from bottle import template, static_file, redirect
 from pyroxy import app, config
 
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 
 def format_file_entry(base_path, filename):
@@ -35,11 +35,19 @@ def serve_static_files(relative_path=""):
         log.info("Serving static file: %s", path)
         return static_file(relative_path, root_path,
                            download=os.path.basename(path))
+
     # Redirect with a trailing slash
-    elif relative_path and not relative_path.endswith('/'):
+    if relative_path and not relative_path.endswith('/'):
         moved_location = relative_path + "/"
         log.info("Redirecting with trailing slash to %s", moved_location)
         redirect(moved_location , 301)
+
+    # If we have an index file available in the current directory, serve it.
+    index_path = os.path.join(path, "index.html")
+    if os.path.exists(index_path):
+        relative_index_path = os.path.join(relative_path, "index.html")
+        log.info("Serving index for /%s", relative_index_path)
+        return static_file(relative_index_path, root_path, download=False)
 
     entries = tuple(format_file_entry(path, entry)
                     for entry in sorted(os.listdir(path)))
