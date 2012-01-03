@@ -2,6 +2,7 @@ import os
 import time
 
 from bottle import template, static_file, redirect
+from operator import itemgetter
 
 from pyroxy import app, config
 
@@ -19,10 +20,8 @@ def format_file_entry(base_path, filename):
     return (filename, mdate, size)
 
 
-@app.route("/packages")
-@app.route("/packages/")
-@app.route("/packages/<relative_path:path>")
-def serve_packages(relative_path=""):
+@app.route("/<relative_path:path>")
+def serve_static_files(relative_path=""):
     root_path = config['pypi_packages_path']
     path = os.path.join(root_path, relative_path)
 
@@ -37,7 +36,8 @@ def serve_packages(relative_path=""):
         moved_location = "/" + os.path.join("packages", relative_path) + "/"
         redirect(moved_location , 301)
 
-    entries = tuple(format_file_entry(path, entry) for entry in os.listdir(path))
+    entries = tuple(format_file_entry(path, entry)
+                    for entry in sorted(os.listdir(path)))
     packages_base_path = "/".join(("packages", relative_path)).strip("/")
 
     return template("directory",
