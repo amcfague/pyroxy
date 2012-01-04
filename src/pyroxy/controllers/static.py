@@ -3,6 +3,7 @@ import os
 import time
 
 from bottle import template, static_file, redirect
+from mimetypes import guess_type
 
 from pyroxy import app, config
 
@@ -33,8 +34,11 @@ def serve_static_files(relative_path=""):
         # This will also catch non-existent files, which will automatically
         # return a 404 error.
         log.info("Serving static file: %s", path)
+        content_type = guess_type(relative_path)[0] or \
+                "application/octet-stream"
         return static_file(relative_path, root_path,
-                           download=os.path.basename(path))
+                           download=os.path.basename(path),
+                           mimetype=content_type)
 
     # Redirect with a trailing slash
     if relative_path and not relative_path.endswith('/'):
