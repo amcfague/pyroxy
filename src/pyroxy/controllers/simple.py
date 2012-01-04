@@ -56,7 +56,7 @@ def remove_links(html_tree):
         elif pred_filter_external_download_links(href, title):
             external_download_links.append(element)
         else:
-            log.warning("Unknown link %s (%s)", title, href)
+            log.debug("Filtering out link: %s (%s)", title, href)
             unknown_links.append(element)
 
     if internal_download_links:
