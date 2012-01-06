@@ -33,3 +33,6 @@ class PyroxyConfig(dict):
             log.debug("Converting `allowed_extensions` to list.")
             self['allowed_extensions'] = map(
                 str.strip, self['allowed_extensions'].split(','))
+        if 'whitelisted_packages' in self:
+            self['whitelisted_packages'] = map(
+                str.lower, self['whitelisted_packages'].split(','))

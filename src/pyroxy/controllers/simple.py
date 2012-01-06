@@ -4,6 +4,7 @@ import os.path
 import bottle
 import lxml.html
 
+from bottle import static_file
 from pyroxy import app, config
 
 
@@ -84,4 +85,8 @@ def remove_links(html_tree):
 def package_list(package_name):
     package_index_path = os.path.join(
         config['pypi_web_path'], "simple", package_name, "index.html")
-    return filter_index(package_index_path)
+    if package_name.lower() in config.get('whitelisted_packages', []):
+        root = os.path.join( config['pypi_web_path'], "simple", package_name)
+        return static_file("index.html", root=root)
+    else:
+        return filter_index(package_index_path)
