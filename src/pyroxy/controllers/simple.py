@@ -63,6 +63,10 @@ def remove_links(html_tree):
     if internal_download_links:
         log.debug("Internal download links used.")
         to_be_removed = external_download_links + home_pages + unknown_links
+        if config.get('always_include_external', True):
+            to_be_removed = external_download_links + home_pages + unknown_links
+        else:
+            to_be_removed = home_pages + unknown_links
     elif external_download_links:
         log.debug("External download links used.")
         to_be_removed = home_pages + unknown_links
