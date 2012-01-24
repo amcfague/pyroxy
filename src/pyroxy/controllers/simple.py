@@ -11,6 +11,27 @@ from pyroxy import app, config
 log = logging.getLogger(__name__)
 
 
+def asbool(val):
+    """
+    Attempts to coerce ``val`` to a boolean value.  This is largely based off
+    of :meth:`paste.deploy.converters.asbool` with a few stylistic tweaks
+    added.
+
+    Raises a :class:`ValueError` if the specified value cannot be coerced to a
+    True or False value.
+    """
+    if not isinstance(val, basestring):
+        return bool(val)
+
+    obj = val.strip().lower()
+    if obj in ['true', 'yes', 'on', 'y', 't', '1']:
+        return True
+    elif obj in ['false', 'no', 'off', 'n', 'f', '0']:
+        return False
+    else:
+        raise ValueError("Could not coerce `%s` to True/False" % obj)
+
+
 def pred_filter_internal_download_links(href, title):
     allowed_extensions = config.get('allowed_extensions')
     if allowed_extensions is None:
@@ -62,11 +83,10 @@ def remove_links(html_tree):
 
     if internal_download_links:
         log.debug("Internal download links used.")
-        to_be_removed = external_download_links + home_pages + unknown_links
-        if config.get('always_include_external', True):
-            to_be_removed = external_download_links + home_pages + unknown_links
-        else:
+        if asbool(config.get('always_include_external', True)):
             to_be_removed = home_pages + unknown_links
+        else:
+            to_be_removed = external_download_links + home_pages + unknown_links
     elif external_download_links:
         log.debug("External download links used.")
         to_be_removed = home_pages + unknown_links
