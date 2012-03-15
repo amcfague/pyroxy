@@ -45,6 +45,10 @@ Optional
         Path to the PyPI simple directory.  Defaults to
         :file:`{pypi_web_path}/simple`.
 
+    whitelisted_packages
+        Comma separated list of packages that will not be filtered in any way,
+        shape or form.  Defaults to ``None``.
+
 -------
 Logging
 -------
