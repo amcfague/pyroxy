@@ -242,4 +242,4 @@ texinfo_documents = [
 # Add some intersphinx configuration here, specifically for the official Python
 # docs.
 intersphinx_mapping = {
-        'python': ('http://docs.python.org/', None)}
+        'python': ('http://python.readthedocs.org/en/latest/', None)}
