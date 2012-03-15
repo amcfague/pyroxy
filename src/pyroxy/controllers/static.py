@@ -12,6 +12,16 @@ log = logging.getLogger(__name__)
 
 
 def format_file_entry(base_path, filename):
+    """
+    Generate a tuple of metadata based on a filename and path.
+
+    :param base_path:
+        The path that contains `filename`.
+    :param filename:
+        The filename.
+    :returns:
+        A tuple containing ``(filename, modification date, file size)``.
+    """
     absolute_path = os.path.join(base_path, filename)
     stat = os.stat(absolute_path)
     mdate = time.strftime("%d-%b-%Y %H:%M", time.gmtime(stat.st_mtime))
@@ -26,6 +36,15 @@ def format_file_entry(base_path, filename):
 
 @app.route("/<relative_path:path>")
 def serve_static_files(relative_path=""):
+    """
+    Serves up a static file if needed, or a filtered index path.
+
+    :param relative_path:
+        The path relative to the base PyPI path.  This includes packages,
+        directories, etc..
+    :returns:
+        Data containing the response to the request.
+    """
     root_path = config['pypi_web_path']
     path = os.path.join(root_path, relative_path)
 
@@ -44,7 +63,7 @@ def serve_static_files(relative_path=""):
     if relative_path and not relative_path.endswith('/'):
         moved_location = relative_path + "/"
         log.info("Redirecting with trailing slash to %s", moved_location)
-        redirect(moved_location , 301)
+        redirect(moved_location, 301)
 
     # If we have an index file available in the current directory, serve it.
     index_path = os.path.join(path, "index.html")
