@@ -33,7 +33,7 @@ You can start pyroxy by simply running::
     ~/pyroxy$ python run_app.py etc/development.ini
 
 Assuming there were no errors, you should now be able to access
-`http://localhost:5000/simple`_ and get a nice directory listing, in much the
+http://localhost:5000/simple and get a nice directory listing, in much the
 same format as from PyPI's official simple site.
 
 Configuration
