@@ -12,9 +12,9 @@ Welcome to pyroxy's documentation!
     repositories, which means you'll need to have a mirror of PyPI, ala
     :pep:`381`.  This will definitely change in the future.
 
------------------------
+=======================
 Narrative Documentation
------------------------
+=======================
 
 .. toctree::
     :maxdepth: 1
@@ -24,9 +24,9 @@ Narrative Documentation
     narr/configuration
     narr/troubleshooting
 
--------------
+=============
 API Reference
--------------
+=============
 
 .. toctree::
     :maxdepth: 1
