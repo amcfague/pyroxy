@@ -14,6 +14,6 @@ setup(
     test_suite='nose.collector',
     zip_safe=False,
     install_requires=["bottle", "lxml"],
-    setup_requires=[],
+    setup_requires=['nose'],
     tests_require=[],
 )
