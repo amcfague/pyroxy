@@ -36,6 +36,22 @@ Assuming there were no errors, you should now be able to access
 http://localhost:5000/simple and get a nice directory listing, in much the
 same format as from PyPI's official simple site.
 
+Using a passenger file (mod_wsgi, unicorn, etc.)
+------------------------------------------------
+
+Instead of using the :file:`run_app.py` driver, one can also deploy this using
+what is known as a passenger file.
+
+When using this from another WSGI application (i.e., :prog:`mod_wsgi`), the
+imported application would be the :data:`~pyroxy.app` variable defined here.  A
+typical WSGI passenger file would look like so::
+
+    from pyroxy import app as application, config
+    config.load_config("/etc/path/to/config.ini")
+
+In the passenger file, there simply needs to be a variable name `application`
+that behaves like a WSGI application, so importing it here is sufficient.
+
 Configuration
 -------------
 

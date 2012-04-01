@@ -16,16 +16,6 @@
 This drives the running and setup of :mod:`bottle`, including setting up a
 template path, setting up :class:`pyroxy.config.PyroxyConfig`, and creating a
 WSGI application, :data:`pyroxy.app`.
-
-When using this from another WSGI application (i.e., :prog:`mod_wsgi`), the
-imported application would be the :data:`~pyroxy.app` variable defined here.
-I.e., a typical WSGI passenger file would look like so::
-
-    from pyroxy import app as application, config
-    config.load_config("/etc/path/to/config.ini")
-
-In the passenger file, there simply needs to be a variable name `application`
-that behaves like a WSGI application, so importing it here is sufficient.
 """
 import bottle
 import os.path
