@@ -51,11 +51,13 @@ def asbool(val):
         raise ValueError("Could not coerce `%s` to True/False" % obj)
 
 
-def pred_filter_internal_download_links(href, title):
+def pred_filter_internal_download_links(package_name, href, title):
     """
     Predicate used to filter internal download links.  Currently, the only
     config value is ``allowed_extensions``.
 
+    :param string package_name:
+        Name of the Python package to retrieve and filter the simple page for.
     :param href:
         Relative URL generated from the simple page (i.e.,
         `../../packages/a/b/c/pyroxy-0.1.tar.gz`)
@@ -67,7 +69,8 @@ def pred_filter_internal_download_links(href, title):
         :const:`True` if the internal download link should be included in the
         output, :const:`False` otherwise.
     """
-    allowed_extensions = config.get('allowed_extensions')
+    allowed_extensions = config.get_package_config(
+            package_name, 'allowed_extensions')
     if allowed_extensions is None:
         return True
 
@@ -75,10 +78,12 @@ def pred_filter_internal_download_links(href, title):
     return extension in allowed_extensions
 
 
-def pred_filter_home_pages(href, title):
+def pred_filter_home_pages(package_name, href, title):
     """
     Predicate used to filter home pages.
 
+    :param string package_name:
+        Name of the Python package to retrieve and filter the simple page for.
     :param href:
         Absolute URL to a `home page` (i.e., a third party site)
     :param title:
@@ -92,11 +97,13 @@ def pred_filter_home_pages(href, title):
     return href.startswith("http") and "home_page" in title
 
 
-def pred_filter_external_download_links(href, title):
+def pred_filter_external_download_links(package_name, href, title):
     """
     Predicate used to filter external download links.  Currently, the only
     config value is ``allowed_extensions``.
 
+    :param string package_name:
+        Name of the Python package to retrieve and filter the simple page for.
     :param href:
         Absolute URL pointing to a downloadable file on a third-party web site.
     :param title:
@@ -136,10 +143,12 @@ def filter_index(index_path):
     return lxml.html.tostring(html_tree)
 
 
-def split_links(elements):
+def split_links(package_name, elements):
     """
     Parses through a list of elements, and splits them up based on their type.
 
+    :param string package_name:
+        Name of the Python package to retrieve and filter the simple page for.
     :param iterable elements:
         iterable containing :class:`lxml.etree.ElementTree.Element`
     :returns:
@@ -155,11 +164,11 @@ def split_links(elements):
         href = element.get("href")
         title = element.text_content()
 
-        if pred_filter_internal_download_links(href, title):
+        if pred_filter_internal_download_links(package_name, href, title):
             internal_download_links.append(element)
-        elif pred_filter_home_pages(href, title):
+        elif pred_filter_home_pages(package_name, href, title):
             home_pages.append(element)
-        elif pred_filter_external_download_links(href, title):
+        elif pred_filter_external_download_links(package_name, href, title):
             external_download_links.append(element)
         else:
             unknown_links.append(element)
@@ -198,18 +207,21 @@ def build_links_to_remove(external_download_links, home_pages,
     return to_be_removed
 
 
-def remove_links(html_tree):
+def remove_links(package_name, html_tree):
     """
     Filters out links based on the various predicates.  Unfortunately, right
     now, the predicates aren't configurable.
 
+    :param string package_name:
+        Name of the Python package to retrieve and filter the simple page for.
     :param html_tree:
         :mod:`lxml.tree` representing the simple page.
     :returns:
         A modified :mod:`lxml.tree` with specific links filtered out.
     """
     (external_download_links, home_pages, internal_download_links,
-            unknown_links) = split_links(html_tree.iterfind(".//a"))
+            unknown_links) = split_links(package_name,
+                    html_tree.iterfind(".//a"))
     to_be_removed = build_links_to_remove(external_download_links, home_pages,
         internal_download_links, unknown_links)
 
