@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import collections
 import ConfigParser
 import logging.config
 import os.path
@@ -20,13 +21,27 @@ import os.path
 log = logging.getLogger(__name__)
 
 
-class PyroxyConfig(dict):
+class PyroxyConfig(collections.Mapping):
     """
     Dictionary mixin that pulls config values from a specified config path using
     :meth:`load_config`.
     """
 
     APP_CONFIG_SECTION = "main"
+    PACKAGE_SECTION_PREFIX = "package_"
+
+    def __init__(self, *args, **kwargs):
+        self._ds = dict(*args, **kwargs)
+
+    def __iter__(self):
+        return iter(self._ds)
+
+    def __len__(self):
+        return len(self._ds)
+
+    def __getitem__(self, key):
+        return self._ds[key]
+
 
     def load_config(self, config_path):
         """
@@ -69,8 +84,8 @@ class PyroxyConfig(dict):
 
         if 'allowed_extensions' in self:
             log.debug("Converting `allowed_extensions` to list.")
-            self['allowed_extensions'] = map(
-                str.strip, self['allowed_extensions'].split(','))
+            self._ds['allowed_extensions'] = map(
+                str.strip, self._ds['allowed_extensions'].split(','))
         if 'whitelisted_packages' in self:
-            self['whitelisted_packages'] = map(
-                str.lower, self['whitelisted_packages'].split(','))
+            self._ds['whitelisted_packages'] = map(
+                str.lower, self._ds['whitelisted_packages'].split(','))
