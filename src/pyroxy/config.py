@@ -42,6 +42,18 @@ class PyroxyConfig(collections.Mapping):
     def __getitem__(self, key):
         return self._ds[key]
 
+    def get_package_config(self, package_name, option):
+        """
+        Returns the specified ``option` ` for ``package_name``if it exists;
+        otherwise, returns the global entry for ``option``.  If neither is
+        specified, a KeyError will be raised.
+        """
+        try:
+            # Use the package specific version if its available.
+            return self._ds['packages'][package_name.lower()][option]
+        except KeyError:
+            # If not, use the "global" option.
+            return self._ds[option]
 
     def load_config(self, config_path):
         """
@@ -82,6 +94,9 @@ class PyroxyConfig(collections.Mapping):
 
         self.update(parser.items(self.APP_CONFIG_SECTION))
 
+        # Also load any package specific config items.
+        self.__parse_package_config(parser)
+
         if 'allowed_extensions' in self:
             log.debug("Converting `allowed_extensions` to list.")
             self._ds['allowed_extensions'] = map(
@@ -89,3 +104,24 @@ class PyroxyConfig(collections.Mapping):
         if 'whitelisted_packages' in self:
             self._ds['whitelisted_packages'] = map(
                 str.lower, self._ds['whitelisted_packages'].split(','))
+
+    def __parse_package_config(self, parser):
+        """
+        Look through the already loaded config ``parser`` for sections beginning
+        with :attr:`PACKAGE_SECTION_PREFIX`, and add them to the special
+        "packages" key in the dictionary.
+        """
+        self._ds['packages'] = dict()
+        for package_section in parser.sections():
+            # If its not a package section, skip it.
+            if not package_section.startswith(self.PACKAGE_SECTION_PREFIX):
+                continue
+
+            options = parser.options(package_section)
+
+            package_name = package_section[len(self.PACKAGE_SECTION_PREFIX):]
+            package_name = package_name.lower()
+            self._ds["packages"][package_name] = options
+
+            log.debug("Adding custom config for package %s: %s",
+                    package_name, options)
