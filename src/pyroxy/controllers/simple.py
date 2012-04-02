@@ -135,7 +135,7 @@ def filter_index(index_path):
     try:
         fd = open(index_path, "r")
     except IOError:
-        log.exception("Could not open simple index for filtering.")
+        log.exception("Could not open %s for filtering.", index_path)
         bottle.abort(404)
 
     html_tree = lxml.html.parse(fd)
