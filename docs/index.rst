@@ -22,7 +22,6 @@ Narrative Documentation
 
     narr/getting_started
     narr/configuration
-    narr/troubleshooting
 
 =============
 API Reference
@@ -34,6 +33,7 @@ API Reference
 
     api/*
 
+==================
 Indices and tables
 ==================
 
