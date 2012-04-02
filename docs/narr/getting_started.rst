@@ -42,7 +42,7 @@ Using a passenger file (mod_wsgi, unicorn, etc.)
 Instead of using the :file:`run_app.py` driver, one can also deploy this using
 what is known as a passenger file.
 
-When using this from another WSGI application (i.e., :prog:`mod_wsgi`), the
+When using this from another WSGI application (i.e., ``mod_wsgi``), the
 imported application would be the :data:`~pyroxy.app` variable defined here.  A
 typical WSGI passenger file would look like so::
 
