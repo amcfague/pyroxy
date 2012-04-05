@@ -7,7 +7,7 @@ setup(
     author='Andrew McFague',
     author_email='amcfague@gmail.com',
     url='https://github.com/amcfague/pyroxy',
-    packages=find_packages("src"),
+    packages=find_packages("src", exclude=['pyroxy.tests', 'pyroxy.tests.*']),
     package_data={'': ['*.tpl']},
     package_dir={'': 'src'},
     include_package_data=True,
@@ -15,5 +15,5 @@ setup(
     zip_safe=False,
     install_requires=["bottle", "lxml"],
     setup_requires=['nose'],
-    tests_require=[],
+    tests_require=["coverage", "mock", "webtest"],
 )
