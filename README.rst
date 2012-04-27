@@ -33,6 +33,9 @@ yourself using::
     python setup.py develop
     python setup.py build_sphinx
 
+The latest (and previously published) versions of the documentation `are always
+available on RTD <http://readthedocs.org/docs/pyroxy/en/v0.1/>`_.
+
 License
 -------
 
